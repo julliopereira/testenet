@@ -11,18 +11,24 @@
 # versão: 0.1 - Inicio do desenvolvimento
 #               20220205
 #               Julio C. Pereira
+# versão: 0.2 - Incluído opção de versionamento
+#               20220206
+#               Julio C. Pereira
+#
+#
+#
 #
 ##########################################################
 # -- MENSAGENS --
 msghelp="
-    Uso $(basename "$0")
-
-    $(basename "$0") -[fmnpthV] <ip_de_destino>
+Uso: $(basename "$0")-[fmnpthV] <ip_de_destino>
 
         -f, --file          Redireciona para arquivo
         -m, --mtr           Faz análise com mtr para o destino
         -n, --nmap          Faz uma avaliação com nmap -A para o destino (root)
         -p, --ping          Testa conectividade para o destino
+        -q, --qos           Envia pacote marcado com EF para o destino
+                            - destino deve availizar se recebe o pacote marcado com EF
         -t, --tracert       Faz um tracert para o destino
         -h, --help          Mostra ajuda do programa
         -V, --version       Mostra a versão do programa
@@ -46,9 +52,17 @@ msgopcoes="
 "
 # -- VARIÁVEIS --
 
+icmp="0"    # PINGAR ?
+trace="0"   # TRAÇAR ROTA ?
+nmap="0"    # ANALISAR DISPOSITIVO ?
+mtr="0"     # MONITORAR QUALIDADE DO TRÁFEGO ?
+ip="$2"       # IP DE DESTINO
 
 # -- FUNÇÕES --
 
+mtrrun() {
+    mtr -t $ip 
+}
 ajuda() {
     echo -e "$msghelp"
 }
@@ -57,9 +71,15 @@ erro_opcoes() {
 }
 
 # -- CORPO --
-case $1 in 
+case $1 in
+    -m|--mtr)
+        mtrrun
+    ;;
     -h|--help)
         ajuda
+    ;;
+    -V|--version)
+        egrep -A 2 "^# versão" testenet.sh | tail -n 3
     ;;
     *)
         erro_opcoes
