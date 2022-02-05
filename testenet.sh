@@ -24,9 +24,10 @@ msghelp="
 Uso: $(basename "$0")-[fmnpthV] <ip_de_destino>
 
         -f, --file          Redireciona para arquivo
+        -g, --geo           Mostra cidade e estado de localização do ip de destino
         -m, --mtr           Faz análise com mtr para o destino
         -n, --nmap          Faz uma avaliação com nmap -A para o destino (root)
-        -p, --ping          Testa conectividade para o destino
+        -p, --ping          Testa conectividade para o destino (3 pings)
         -q, --qos           Envia pacote marcado com EF para o destino
                             - destino deve availizar se recebe o pacote marcado com EF
         -t, --tracert       Faz um tracert para o destino
@@ -35,7 +36,7 @@ Uso: $(basename "$0")-[fmnpthV] <ip_de_destino>
 
     Exemplos:
 
-    -Mostra cidade e estado de localização do ip de destino e salva em arquivo
+    -Realiza teste de conectivodade para o ip de destino e salva resultado em arquivo
         $(basename "$0") -f /tmp/arquivo 192.168.12.10
 
     -Monitora qualidade do caminho de rede até o ip de destino
