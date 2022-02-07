@@ -23,16 +23,16 @@
 msghelp="
 Uso: $(basename "$0")-[fmnpthV] <ip_de_destino>
 
-        -f, --file          Redireciona para arquivo
-        -g, --geo           Mostra cidade e estado de localização do ip de destino
-        -m, --mtr           Faz análise com mtr para o destino
-        -n, --nmap          Faz uma avaliação com nmap -A para o destino (root)
-        -p, --ping          Testa conectividade para o destino (3 pings)
-        -q, --qos           Envia pacote marcado com EF para o destino
-                            - destino deve availizar se recebe o pacote marcado com EF
-        -t, --tracert       Faz um tracert para o destino
-        -h, --help          Mostra ajuda do programa
-        -V, --version       Mostra a versão do programa
+        -f,           (file)    Redireciona para arquivo
+        -g,           (geo)     Mostra cidade e estado de localização do ip de destino
+        -m,           (mtr)     Faz análise com mtr para o destino
+        -n,           (nmap)    Faz uma avaliação com nmap -A para o destino (root)
+        -p,           (ping)    Testa conectividade para o destino (3 pings)
+        -q,           (ping -Q) Envia pacote marcado com EF,AF41,AF31,AF21,AF11 para o destino
+                      - destino deve retornar com EF,AF41,AF31,AF21,AF11
+        -t,           (trace)   Faz um tracert para o destino
+        -h,           (ajuda)   Mostra ajuda do programa
+        -V,           (versão)  Mostra a versão do programa
 
     Exemplos:
 
@@ -49,7 +49,7 @@ Uso: $(basename "$0")-[fmnpthV] <ip_de_destino>
         $(basename "$0") -n 192.168.12.10
 "
 msgopcoes="
-    $(basename "$0") : opção $1 incorreta
+    $(basename "$0") : Opção: $OPTARG incorreta
 "
 # -- VARIÁVEIS --
 
@@ -61,32 +61,37 @@ ip="$2"       # IP DE DESTINO
 
 # -- FUNÇÕES --
 
-mtrrun() {
+file_func() {
+
+}
+geo_func() {
+
+}
+
+mtrrun_func() {
     mtr -t $ip 
 }
-ajuda() {
+ajuda_func() {
     echo -e "$msghelp"
 }
-erro_opcoes() {
+erro_func() {
     echo -e "$msgopcoes"
 }
 
 # -- CORPO --
-case $1 in
-    -m|--mtr)
-        mtrrun
-    ;;
-    -h|--help)
-        ajuda
-    ;;
-    -V|--version)
-        egrep -A 2 "^# versão" testenet.sh | tail -n 3
-    ;;
-    *)
-        erro_opcoes
-        exit 1
-    ;;
-esac
+
+while getopts ":m" opc
+do
+    case $opc in
+        f) file_func ;;
+        g) geo_func ;;
+        m) mtrrun_func ;;
+        h) ajuda_func ;;
+        V) egrep -A 2 "^# versão" testenet.sh | tail -n 3 ;;
+       \?) Opção: $opc incorreta ;;
+        :) erro_func exit 1 ;;
+    esac
+done 
 
 # -- SAÍDA --
 exit 0
