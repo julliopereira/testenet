@@ -62,10 +62,10 @@ ip="$2"       # IP DE DESTINO
 # -- FUNÇÕES --
 
 file_func() {
-
+    echo file
 }
 geo_func() {
-
+    echo geo 
 }
 
 mtrrun_func() {
