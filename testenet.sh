@@ -15,15 +15,12 @@
 #               20220206
 #               Julio C. Pereira
 #
-#
-# 
-#
-##########################################################
+###############################################################
 # -- MENSAGENS --
 msghelp="
 Uso: $(basename "$0")-[fmnpthV] <ip_de_destino>
 
-        -f,           (file)    Redireciona para arquivo
+        -f <caminho>  (file)    Redireciona para arquivo
         -g,           (geo)     Mostra cidade e estado de localização do ip de destino
         -m,           (mtr)     Faz análise com mtr para o destino
         -n,           (nmap)    Faz uma avaliação com nmap -A para o destino (root)
@@ -62,17 +59,28 @@ ip="$2"       # IP DE DESTINO
 # -- FUNÇÕES --
 
 file_func() {
-    echo file
+    if [ -n $OPTARG ]; then
+        arquivo=$( echo "$OPTARG" | egrep "^/.*|.*[/].*|.*[^ ]" )
+        diretorio=$( echo "$OPTARG" | egrep -o ".*/" )
+        if [ -d $diretorio ]; then
+             echo $arquivo
+        else
+            echo "diretorio não existe"
+        fi
+    fi
 }
 geo_func() {
     echo geo 
 }
 
-mtrrun_func() {
+mtr_func() {
     mtr -t $ip 
 }
 ajuda_func() {
     echo -e "$msghelp"
+}
+versao_func() {
+    egrep -A 2 "^# versão" testenet.sh | tail -n 3
 }
 erro_func() {
     echo -e "$msgopcoes"
@@ -80,18 +88,23 @@ erro_func() {
 
 # -- CORPO --
 
-while getopts ":m" opc
+while getopts ":mf:ghVnpqt" opc
 do
     case $opc in
         f) file_func ;;
         g) geo_func ;;
-        m) mtrrun_func ;;
+        m) mtr_func ;;
         h) ajuda_func ;;
-        V) egrep -A 2 "^# versão" testenet.sh | tail -n 3 ;;
+        V) versao_func ;;
        \?) Opção: $opc incorreta ;;
         :) erro_func exit 1 ;;
     esac
 done 
+echo 
+#shift
+shift $((OPTIND - 1))
+echo "INDICE: $OPTIND"
+echo "RESTO: $*"
 
 # -- SAÍDA --
 exit 0
