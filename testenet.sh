@@ -72,7 +72,6 @@ file_func() {
 geo_func() {
     echo geo 
 }
-
 mtr_func() {
     mtr -t $ip 
 }
